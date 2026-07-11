@@ -1,0 +1,41 @@
+>>> a = "this is a string"
+>>> a = a.split(" ") # a is converted to a list of strings. 
+>>> print a
+['this', 'is', 'a', 'string']
+Joining a string is simple:
+
+>>> a = "-".join(a)
+>>> print a
+this-is-a-string 
+
+Asynco Programming Syllabus:
+Introduction to Asynchronous Programming
+Synchronous vs Asynchronous Programming
+Blocking vs Non-Blocking Code
+Concurrency vs Parallelism
+Why asyncio was created
+Coroutines
+async def
+await
+Event Loop
+asyncio.run()
+asyncio.sleep()
+Tasks
+create_task()
+gather()
+Futures
+Queues
+Locks
+Semaphores
+Timeouts
+Cancellation
+Async generators
+Async iterators
+async with
+async for
+aiohttp
+Async database programming
+FastAPI
+Real-world projects
+Interview questions
+Advanced internals
