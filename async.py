@@ -24,3 +24,18 @@ async def main():
 asyncio.run(main())
 
 # Fetch Urls
+
+import asyncio
+import aiohttp
+
+async def x1(session,url):
+    async with session.get(url) as response:
+        print(f'fetched {url} with status {response.status}')
+
+async def main():
+    urls = ['https://httpbin.org/#/Images/get_image','https://httpbin.org/#/Images/get_image_jpeg','https://httpbin.org/#/Images/get_image_png']
+    async with aiohttp.ClientSession() as session:
+        z = [x1(session,url) for url in urls]
+        await asyncio.gather(*z)
+
+asyncio.run(main())
