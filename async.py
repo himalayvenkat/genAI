@@ -39,3 +39,57 @@ async def main():
         await asyncio.gather(*z)
 
 asyncio.run(main())
+
+
+# SYNC + ASYNC with multi threading 
+import asyncio
+import time
+import concurrent.futures
+
+def s1(item):
+    print(f"checing the {item}")
+    time.sleep(4)
+    return f'{item} in stock: 42'
+
+async def main():
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool,s1,"Masala Chai")
+        print(result)
+asyncio.run(main())
+
+
+import asyncio
+import time
+import concurrent.futures
+
+def s11(a,b):
+    print(f'the Values of a and b are {a},{b}')
+    time.sleep(5)
+    return a+b
+
+async def main():
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool,s11,10,20)
+        print(result)
+
+asyncio.run(main())
+
+# SYNC + ASYNC with multi processing 
+
+import asyncio
+import time
+import concurrent.futures
+
+def x121(x):
+    return x[::-1]
+
+async def main():
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ProcessPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool,x121,'HIMALAY')
+        print(result)
+
+if __name__ == '__main__':
+    asyncio.run(main())
