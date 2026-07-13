@@ -93,3 +93,43 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+
+
+#### Daemon Thread 
+
+import threading
+
+
+def x1():
+    while True:
+        print("Hi Ra Mama")
+
+t = threading.Thread(target=x1,daemon=True)
+t.start()
+print("Main Thread End")
+
+import threading
+
+# This Program will executes restlessly
+
+def x1():
+    while True:
+        print("Hi Ra Mama")
+
+t = threading.Thread(target=x1,daemon=False)
+t.start()
+print("Main Thread End")
+
+import multiprocessing
+import time
+
+
+def x1():
+    while True:
+        print("Hi Ra Mama")
+
+if __name__ == '__main__':
+    x = multiprocessing.Process(target=x1,daemon=True)
+    x.start()
+    time.sleep(5) 
+print("Main Thread End")
