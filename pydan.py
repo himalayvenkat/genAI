@@ -73,3 +73,70 @@ print(xy)
 
 # (pydantic_venv) C:\Users\XXXX\Documents\pydantic_project>deactivate ----> Deactivating virtual env
 # C:\Users\XXXX\Documents\pydantic_project>
+
+from pydantic import BaseModel
+
+class U1(BaseModel):
+    id:int
+    name:str
+    price:float
+    in_stock:bool
+
+data = {
+    'id':101,
+    'name':"Laptop",
+    'price':120, # its a int , but it will give float
+    'in_stock': 'true' # it will automatically convert but we should not give it
+}
+
+x = U1(**data)
+print(x) # o/p = id=101 name='Laptop' price=120.0 in_stock=True
+print(x.name) # o/p = Laptop
+
+from typing import List,Dict,Optional
+from pydantic import BaseModel,Field
+import re
+class B1(BaseModel):
+    id: int
+    name: str
+    subjects: List[str] = ['Eng','Hindi','Telugu']
+    age: int = Field(
+        ...,
+        ge = 15,
+        lt =25
+    )
+    marks: Dict[str,float]
+    place: Optional[str] = 'HYD'
+
+data = {
+    'id': 101,
+    'name': 'Hima',
+    'subjects': ['Maths','Eng','Telugu'],
+    'age': 20,
+    'marks': {
+        'Maths': 100,
+        'Eng': 80,
+        'Telugu': 100
+    }
+}
+xx = B1(**data)
+print(xx)
+
+class B2(BaseModel):
+    id: int
+    name: str
+    email : str = Field(
+        ...,
+        min_length = 3,
+        max_length = 50,
+        pattern = r'^[A-Za-z0-9._%+-]+@gmail.com'
+    )
+    
+data1 = {
+    'id': 101,
+    'name': 'Hima',
+    'email': 'himalay@gmail.com'
+}
+
+xy1 = B2(**data1)
+print(xy1)
