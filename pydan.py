@@ -335,3 +335,98 @@ data = {
 x = User(**data)
 print(x)
 
+# optional Nested Models
+
+from pydantic import BaseModel
+from typing import Optional
+
+class A(BaseModel):
+    id: int
+    name: str
+
+class B(BaseModel):
+    id1:int
+    name: str
+    aClass: Optional[A] = None
+
+x = B(id1 = 12,name="Hima",aClass = {'id':121,'name':"aiu"})
+print(x)
+
+# Mixed Data types:
+
+from pydantic import BaseModel
+from typing import Optional,Union
+
+class A(BaseModel):
+    id_a: int
+    name_a: str
+
+class C(BaseModel):
+    id_c: int
+    name_c: str
+class B(BaseModel):
+    id1:int
+    name: str
+    aClass: List[Union[C,A]]
+
+x = B(id1 = 12,name="Hima",aClass = [{'id_a':121,'name_a':"aiu"},{'id_c':121,'name_c':"aiu"}])
+print(x)
+
+# Deeply nested ===> More nesting
+class A(BaseModel):
+    id_a: int
+    name_a: str
+
+class B(BaseModel):
+    id_c: int
+    name_c: str
+    a_class : A
+
+class C(BaseModel):
+    id_a: int
+    name_a: str
+    b_class : B
+
+class D(BaseModel):
+    id_c: int
+    name_c: str
+    c_class : C
+
+class E(BaseModel):
+    id_a: int
+    name_a: str
+    d_class : D
+
+class F(BaseModel):
+    id_c: int
+    name_c: str
+    e_class : E
+
+###########################################################
+
+from pydantic import BaseModel,ConfigDict
+from typing import Optional
+from datetime import datetime
+
+# to convert to dict
+class A1(BaseModel):
+    id: int
+    createdAt : datetime
+    name:str
+
+    model_config = ConfigDict(json_encoders={datetime: lambda v:v.strftime('%d-%m-%y')})
+
+    # Mmodel_config will always have the "=" sign
+
+x = A1(id = 1,createdAt = datetime.now(),name="Himalay")
+print(x)
+# O/p =  '''''   id=1 createdAt=datetime.datetime(2026, 7, 19, 23, 6, 14, 537060) name='Himalay'  '''
+
+print(x.model_dump()) # -----> type = Dict
+
+# o/p =     {'id': 1, 'createdAt': datetime.datetime(2026, 7, 19, 23, 7, 13, 600941), 'name': 'Himalay'}
+
+print(x.model_dump_json()) #  -----> type = JSON STRING
+
+# o/p = {"id":1,"createdAt":"19-07-26","name":"Himalay"}
+
