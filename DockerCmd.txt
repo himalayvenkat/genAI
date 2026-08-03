@@ -1,0 +1,26 @@
+Docker commands
+
+in cmd we need to run these commands
+
+docker  ---> This will give wheather the docker is installed or not
+
+docker --version =====> To see the version
+
+docker pull busybox =====> here busy box is an image and we are pulling into our system
+
+docker run busybox ls ====> used to run the busybox, which is pulled in the previous step
+
+docker container ps -a    ====> to see the container which is running
+
+docker container rm <<containerId>> ====> used to delete the container
+
+
+# Docker Container For Ollama:
+
+docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama     =====> this is the command for Insatalling the image of Ollama
+
+
+docker run -d -p 3000:8080 -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main      =====> to open th open webAi , we need to run this command as well
+
+
+
