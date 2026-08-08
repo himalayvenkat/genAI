@@ -1,57 +1,74 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import requests
+import json
 
-def get_Temp(city):
+load_dotenv()
+client = OpenAI()
 
+# Tool
+def getTemp(city):
     url = f"https://wttr.in/{city}?format=%C+%t"
     response = requests.get(url)
     return response.text
 
-systemPrompt = '''
-    Rules:
-    - you are an agent Named Monsoon , you will tell only the weather data, that to you will say the real time data
-    - you will strictly adaher to rules
-    - First extarct the City for which we want the temperature (Example : Delhi,Hyderabad...)
-    - Call the method get_temp with the city param
-    - give that response as the output
-
-    Output Format:
-                {{
-                    'step':"Start"|'Plan'|'Output'|Tool|'None',
-                    'content':'string'
-                }}
-
-    Examples:
-    Q: What is the temperature of Delhi?
-
-    Step1: city = Delhi
-    Step2: calling the method get_Temp(city)
-    A: Partly Cloudy  +27°C
-
-    Tools:
-    - get_Temp(city)
-    
-    
-'''
-
-load_dotenv()
-def main():
-    client = OpenAI()
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role":"system",
-                "content": systemPrompt
-            },
-            {
-                "role":"user",
-                "content":"What is the temperature in hyderabad now"
+# Tool Definition:
+tools_def = [
+    {
+        "type": "function",
+        "function": {
+            "name":"getTemp",
+            "parameters":{
+                "type": "object",
+                "properties":{
+                    "city":{
+                    "type": "string",
+                    "description":"it will gives the temperature of the location"
+                    }
+                },
+                "required":["city"]
             }
-        ]
+        }
+    }
+]
+
+# User Query
+messages = [
+    {
+        "role": "user",
+        "content":"What is the temperature in the Hyderabad now"
+    }
+]
+
+# First LLM Call:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages,
+    tools=tools_def,
+    tool_choice="auto"
+)
+message = response.choices[0].message
+# Tool Execute
+if message.tool_calls:
+    tool_call = message.tool_calls[0]
+    args = json.loads(tool_call.function.arguments)
+    weather_response = getTemp(args["city"])
+    # adding assistant message
+    messages.append(message)
+    # Add tool response
+    tool_response = {
+        "role":"tool",
+        "tool_call_id": tool_call.id,
+        "content": weather_response
+    }
+    messages.append(tool_response)
+    print(messages)
+    finalResponse = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
     )
-    
-    print(response.choices[0].message.content)
-main()
+    print(finalResponse.choices[0].message.content)
+else:
+    print(message.content)
+
+
